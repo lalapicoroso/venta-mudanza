@@ -68,11 +68,12 @@
     text-align: left; font: inherit; color: inherit; padding: 0;
   }
   .card:hover .thumb { box-shadow: var(--shadow); }
-  .card:hover .thumb img, .card:hover .ph { transform: scale(1.03); }
+  .card:hover .thumb img:not(.fill), .card:hover .ph { transform: scale(1.03); }
   .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .thumb { aspect-ratio: 4 / 5; background: var(--surface-2); position: relative; overflow: hidden; border-radius: var(--radius); transition: .2s; }
+  .thumb { aspect-ratio: 4 / 5; background: #f4f4f4; position: relative; overflow: hidden; border-radius: var(--radius); transition: .2s; }
   .thumb img, .ph { transition: transform .3s; }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; }
+  .thumb img.fill { position: absolute; inset: 0; object-fit: cover; filter: blur(22px) saturate(1.1); transform: scale(1.2); opacity: .55; }
   .ph { width: 100%; height: 100%; display: grid; place-items: center; font-size: 56px; font-weight: 700; color: #d4d4d4; font-weight: 800; letter-spacing: -0.04em; }
   .badge {
     position: absolute; top: 12px; left: 12px; font-size: 12px; font-weight: 700;
@@ -89,37 +90,68 @@
   .card.vendido .price { color: var(--muted); text-decoration: line-through; }
   .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 0; }
 
-  /* Detalle */
-  dialog { margin: auto;
-    border: 1px solid var(--line); border-radius: 24px; padding: 0; background: var(--surface); color: var(--text);
-    width: min(860px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto;
+  /* Detalle a pantalla completa */
+  body.viendo-detalle > header, body.viendo-detalle > nav, body.viendo-detalle > main, body.viendo-detalle > footer { display: none; }
+  #detalle { display: none; min-height: 100svh; }
+  body.viendo-detalle #detalle { display: block; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10; height: 60px; display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
   }
-  dialog::backdrop { background: rgba(0,0,0,.5); backdrop-filter: blur(4px); }
-  .detail { display: grid; grid-template-columns: 1.2fr 1fr; }
-  @media (max-width: 720px) { .detail { grid-template-columns: 1fr; } }
-  .gallery { background: var(--surface-2); position: relative; }
-  .gallery .main { aspect-ratio: 1; }
-  .gallery .main img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; }
-  .thumbs button { flex: none; width: 56px; height: 56px; padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; cursor: pointer; background: none; opacity: .6; }
-  .thumbs button[aria-current="true"] { border-color: var(--accent); opacity: 1; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .back {
+    display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600; font-size: 15px;
+    background: none; border: none; color: var(--text); cursor: pointer; padding: 8px 10px 8px 0;
+  }
+  .back svg { width: 20px; height: 20px; }
+  .share { font: inherit; font-size: 14px; font-weight: 600; background: none; border: 1px solid var(--line); border-radius: 99px; padding: 7px 14px; cursor: pointer; color: var(--text); }
+
+  .detail { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr); gap: 40px; padding: 24px 0 60px; align-items: start; }
+  .gallery { position: sticky; top: 84px; }
+  .stage { position: relative; }
+  .slides {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    background: var(--surface-2); border-radius: var(--radius); height: calc(100svh - 200px); min-height: 360px;
+  }
+  .slides::-webkit-scrollbar { display: none; }
+  .slide { flex: 0 0 100%; scroll-snap-align: center; display: grid; place-items: center; }
+  .slide img { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; display: block; }
+  .gnav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: none; background: #fff; box-shadow: var(--shadow); font-size: 20px; cursor: pointer; color: var(--text); }
+  .gnav.prev { left: 14px; } .gnav.next { right: 14px; }
+  .gnav[disabled] { opacity: 0; pointer-events: none; }
+  .counter { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 600; background: rgba(0,0,0,.65); color: #fff; padding: 4px 10px; border-radius: 99px; }
+  .thumbs { display: flex; gap: 8px; padding-top: 12px; overflow-x: auto; scrollbar-width: none; }
+  .thumbs button { flex: none; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; cursor: pointer; background: var(--surface-2); opacity: .55; transition: .15s; }
+  .thumbs button[aria-current="true"] { border-color: var(--text); opacity: 1; }
   .thumbs img { width: 100%; height: 100%; object-fit: cover; }
-  .info { padding: 28px; display: flex; flex-direction: column; gap: 12px; }
-  .info h2 { font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; }
-  .info .price { font-size: 30px; padding: 0; margin: 0; }
-  .info p { color: var(--muted); }
-  .close {
-    position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border-radius: 50%;
-    border: none; background: #fff; color: var(--text); font-size: 22px; box-shadow: var(--shadow); cursor: pointer;
-  }
+  .info { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+  .info h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; }
+  .info .price { font-size: 28px; padding: 0; margin: 0; }
+  .info p { color: #3d3d3d; font-size: 17px; line-height: 1.6; }
+  .cta-wrap { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
   .cta {
-    margin-top: auto; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
     background: var(--accent); color: var(--accent-ink); text-decoration: none; font-weight: 700; font-size: 17px;
-    padding: 16px 20px; border-radius: 14px; transition: .15s;
+    padding: 17px 20px; border-radius: 14px; transition: .15s;
   }
   .cta:hover { filter: brightness(1.1); }
   .cta.off { background: var(--surface-2); color: var(--muted); pointer-events: none; }
   .note { font-size: 13px; color: var(--muted); text-align: center; }
+
+  @media (max-width: 800px) {
+    .detail { grid-template-columns: 1fr; gap: 20px; padding: 0 0 120px; }
+    #detalle .detail.wrap { padding: 0; }
+    .gallery { position: relative; top: 0; }
+    .slides { border-radius: 0; height: 60svh; min-height: 0; }
+    .gnav, .thumbs { display: none; }
+    .info { padding: 0 20px; }
+    .cta-wrap {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; margin: 0;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.96);
+      backdrop-filter: blur(10px); border-top: 1px solid var(--line);
+    }
+    .cta-wrap .note { display: none; }
+  }
 
   footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
   footer a { color: var(--accent); }
@@ -145,10 +177,15 @@
   <div class="wrap">¿Dudas o querés ofertar por varias cosas juntas? <a id="wa-general" target="_blank" rel="noopener">Escribime por WhatsApp</a>.</div>
 </footer>
 
-<dialog id="modal" aria-labelledby="m-title">
-  <button class="close" aria-label="Cerrar" onclick="modal.close()">×</button>
-  <div class="detail" id="detail"></div>
-</dialog>
+<section id="detalle" aria-labelledby="d-title">
+  <div class="topbar">
+    <div class="wrap">
+      <button class="back" id="volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Volver</button>
+      <button class="share" id="compartir">Compartir</button>
+    </div>
+  </div>
+  <div class="detail wrap" id="detail"></div>
+</section>
 
 <script>
   // Carga productos.js sin caché, así los cambios se ven al instante
@@ -202,7 +239,7 @@
     $("grid").innerHTML = list.length ? list.map((p) => `
       <button class="card ${p.estado}" data-id="${esc(p.id)}">
         <div class="thumb">
-          ${p.fotos?.length ? `<img src="${esc(p.fotos[0])}" alt="${esc(p.nombre)}" loading="lazy">` : `<div class="ph">${esc(initials(p.nombre))}</div>`}
+          ${p.fotos?.length ? `<img class="fill" src="${esc(p.fotos[0])}" alt="" aria-hidden="true" loading="lazy"><img src="${esc(p.fotos[0])}" alt="${esc(p.nombre)}" loading="lazy">` : `<div class="ph">${esc(initials(p.nombre))}</div>`}
           ${p.estado !== "disponible" ? `<span class="badge ${p.estado}">${p.estado}</span>` : ""}
           ${p.fotos?.length > 1 ? `<span class="count">${p.fotos.length} fotos</span>` : ""}
         </div>
@@ -213,14 +250,27 @@
         </div>
       </button>`).join("") : `<p class="empty">No hay nada acá por ahora.</p>`;
   }
+
+  // Detalle (pantalla completa, con URL propia: tusitio/#id)
+  let scrollCatalogo = 0, actual = null;
   $("grid").addEventListener("click", (e) => {
-    const c = e.target.closest(".card"); if (c) abrir(c.dataset.id);
+    const c = e.target.closest(".card"); if (!c) return;
+    scrollCatalogo = scrollY;
+    location.hash = c.dataset.id;
+  });
+  $("volver").addEventListener("click", () => {
+    if (history.state?.desdeCatalogo) history.back();
+    else { history.replaceState(null, "", location.pathname); mostrar(); }
+  });
+  $("compartir").addEventListener("click", async () => {
+    const url = location.href, title = actual?.nombre || C.titulo;
+    try {
+      if (navigator.share) await navigator.share({ title, url });
+      else { await navigator.clipboard.writeText(url); $("compartir").textContent = "¡Link copiado!"; setTimeout(() => ($("compartir").textContent = "Compartir"), 1800); }
+    } catch {}
   });
 
-  // Detalle
-  const modal = $("modal");
-  function abrir(id) {
-    const p = P.find((x) => x.id === id); if (!p) return;
+  function detalle(p) {
     const fotos = p.fotos || [];
     const msg = `¡Hola! Me interesa "${p.nombre}"${p.precio == null ? "" : ` (${money(p.precio)})`} de tu venta por mudanza. ¿Sigue disponible?`;
     const cta = {
@@ -230,29 +280,67 @@
     }[p.estado];
     $("detail").innerHTML = `
       <div class="gallery">
-        <div class="main">${fotos.length ? `<img id="main-img" src="${esc(fotos[0])}" alt="${esc(p.nombre)}">` : `<div class="ph" style="aspect-ratio:1">${esc(initials(p.nombre))}</div>`}</div>
-        ${fotos.length > 1 ? `<div class="thumbs">${fotos.map((f, i) => `<button data-src="${esc(f)}" aria-current="${i === 0}" aria-label="Foto ${i + 1}"><img src="${esc(f)}" alt=""></button>`).join("")}</div>` : ""}
+        <div class="stage">
+        <div class="slides" id="slides">
+          ${fotos.length ? fotos.map((f, i) => `<div class="slide"><img src="${esc(f)}" alt="${esc(p.nombre)} – foto ${i + 1}" ${i ? 'loading="lazy"' : ""}></div>`).join("")
+            : `<div class="slide"><div class="ph">${esc(initials(p.nombre))}</div></div>`}
+        </div>
+        ${fotos.length > 1 ? `
+          <button class="gnav prev" aria-label="Foto anterior">‹</button>
+          <button class="gnav next" aria-label="Foto siguiente">›</button>
+          <span class="counter" id="counter">1 / ${fotos.length}</span>` : ""}
+        </div>
+        ${fotos.length > 1 ? `<div class="thumbs">${fotos.map((f, i) => `<button data-i="${i}" aria-current="${i === 0}" aria-label="Ver foto ${i + 1}"><img src="${esc(f)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
       </div>
       <div class="info">
-        <span class="cat">${esc(p.categoria)}${p.estado !== "disponible" ? ` · <span style="color:var(--accent)">${p.estado}</span>` : ""}</span>
-        <h2 id="m-title">${esc(p.nombre)}</h2>
+        <span class="cat">${esc(p.categoria)}${p.estado !== "disponible" ? ` · <span style="color:var(--accent);font-weight:600">${p.estado}</span>` : ""}</span>
+        <h2 id="d-title">${esc(p.nombre)}</h2>
         <span class="price">${money(p.precio)}</span>
         <p>${esc(p.descripcion)}</p>
-        ${cta}
+        <div class="cta-wrap">${cta}</div>
       </div>`;
-    $("detail").querySelectorAll(".thumbs button").forEach((b) => b.addEventListener("click", () => {
-      $("main-img").src = b.dataset.src;
-      $("detail").querySelectorAll(".thumbs button").forEach((x) => x.setAttribute("aria-current", x === b));
-    }));
-    history.replaceState(null, "", "#" + p.id);
-    modal.showModal();
+
+    if (fotos.length < 2) return;
+    const slides = $("slides"), n = fotos.length;
+    const prev = $("detail").querySelector(".prev"), next = $("detail").querySelector(".next");
+    const ir = (i) => slides.scrollTo({ left: i * slides.clientWidth, behavior: "smooth" });
+    const idx = () => Math.round(slides.scrollLeft / (slides.clientWidth || 1));
+    const sync = () => {
+      const i = idx();
+      $("counter").textContent = `${i + 1} / ${n}`;
+      prev.disabled = i === 0; next.disabled = i === n - 1;
+      $("detail").querySelectorAll(".thumbs button").forEach((b) => b.setAttribute("aria-current", +b.dataset.i === i));
+    };
+    slides.addEventListener("scroll", () => requestAnimationFrame(sync), { passive: true });
+    prev.addEventListener("click", () => ir(idx() - 1));
+    next.addEventListener("click", () => ir(idx() + 1));
+    $("detail").querySelectorAll(".thumbs button").forEach((b) => b.addEventListener("click", () => ir(+b.dataset.i)));
+    requestAnimationFrame(sync);
   }
-  modal.addEventListener("close", () => history.replaceState(null, "", location.pathname));
-  modal.addEventListener("click", (e) => { if (e.target === modal) modal.close(); });
+
+  function mostrar() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const p = id && P.find((x) => x.id === id);
+    if (p) {
+      if (!history.state) history.replaceState({ desdeCatalogo: scrollCatalogo > 0 || document.body.dataset.listo === "1" }, "");
+      actual = p;
+      detalle(p);
+      document.body.classList.add("viendo-detalle");
+      document.title = `${p.nombre} · ${C.titulo}`;
+      scrollTo(0, 0);
+    } else {
+      actual = null;
+      document.body.classList.remove("viendo-detalle");
+      document.title = C.titulo;
+      scrollTo(0, scrollCatalogo);
+    }
+  }
+  addEventListener("hashchange", mostrar);
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && actual) $("volver").click(); });
 
   render();
-  // Link directo a un producto: tusitio/#sofa
-  if (location.hash) abrir(decodeURIComponent(location.hash.slice(1)));
+  mostrar();
+  document.body.dataset.listo = "1";
 </script>
 </body>
 </html>
