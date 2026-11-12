@@ -47,6 +47,18 @@ window.PRODUCTOS = [
     ],
   },
   {
+    id: "mesa-ratona",
+    nombre: "Mesa ratona vintage con vidrio",
+    precio: null,
+    categoria: "Muebles",
+    estado: "disponible",
+    descripcion: "Mesa ratona de madera estilo mid-century, con tapa de vidrio, patas abiertas y un compartimento bajo el vidrio (pintado en verde agua) para guardar revistas, libros o lo que quieras tener a mano.",
+    fotos: [
+      "fotos/mesa-ratona-1.jpg",
+      "fotos/mesa-ratona-2.jpg",
+    ],
+  },
+  {
     id: "estanteria-mimbre",
     nombre: "Estantería de mimbre con arco",
     precio: null,
