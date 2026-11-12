@@ -6,7 +6,7 @@ window.CONFIG = {
   subtitulo: "Me mudo en diciembre y vendo cosas de casa. Retiro en zona — coordinamos por WhatsApp.",
   // Número en formato internacional, sin +, espacios ni guiones.
   // Argentina celular: 549 + código de área sin 0 + número sin 15. Ej: 5491123456789
-  whatsapp: "5491100000000",
+  whatsapp: "5491169987319",
   moneda: "$",
   acento: "#ff385c",      // color de acento
   acentoTexto: "#ffffff", // color del texto sobre el acento
