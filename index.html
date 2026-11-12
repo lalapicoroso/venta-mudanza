@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venta x mudanza</title>
+<meta name="description" content="Catálogo de cosas de casa en venta por mudanza.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0c;
+    --surface: #171a15;
+    --surface-2: #20241d;
+    --line: #2c3127;
+    --text: #eef2e8;
+    --muted: #9aa392;
+    --lime: #c6f432;
+    --lime-ink: #0d0f0c;
+    --amber: #f5b83d;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    line-height: 1.45; min-height: 100vh;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  header.wrap { padding-top: 56px; padding-bottom: 28px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 500; color: var(--lime);
+    border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; margin-bottom: 20px;
+  }
+  .tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lime); }
+  h1 { font-size: clamp(40px, 8vw, 76px); font-weight: 700; letter-spacing: -0.03em; line-height: 0.95; }
+  h1 em { font-style: normal; color: var(--lime); }
+  .sub { color: var(--muted); font-size: 18px; max-width: 560px; margin-top: 16px; }
+
+  .filters {
+    position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px); padding: 14px 0; border-bottom: 1px solid var(--line);
+  }
+  .filters .wrap { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; align-items: center; }
+  .filters .wrap::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+    background: var(--surface); color: var(--text); border: 1px solid var(--line);
+    padding: 9px 16px; border-radius: 99px; transition: .15s;
+  }
+  .chip:hover { border-color: var(--muted); }
+  .chip[aria-pressed="true"] { background: var(--lime); color: var(--lime-ink); border-color: var(--lime); }
+  .toggle { margin-left: auto; flex: none; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; padding-left: 12px; }
+  .toggle input { accent-color: var(--lime); width: 16px; height: 16px; }
+
+  .grid {
+    display: grid; gap: 16px; padding: 28px 0 80px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: .2s;
+    text-align: left; font: inherit; color: inherit; padding: 0;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #3d4436; }
+  .card:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+  .thumb { aspect-ratio: 4 / 3; background: var(--surface-2); position: relative; overflow: hidden; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph { width: 100%; height: 100%; display: grid; place-items: center; font-size: 56px; font-weight: 700; color: var(--line); letter-spacing: -0.04em; }
+  .badge {
+    position: absolute; top: 12px; left: 12px; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em; padding: 5px 10px; border-radius: 99px;
+  }
+  .badge.reservado { background: var(--amber); color: #1a1205; }
+  .badge.vendido { background: var(--text); color: var(--bg); }
+  .card.vendido .thumb img, .card.vendido .ph { filter: grayscale(1) brightness(.5); }
+  .count { position: absolute; bottom: 10px; right: 10px; font-size: 12px; background: rgba(0,0,0,.6); padding: 3px 8px; border-radius: 99px; }
+  .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .cat { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .name { font-size: 18px; font-weight: 500; }
+  .price { font-size: 24px; font-weight: 700; margin-top: auto; padding-top: 10px; color: var(--lime); }
+  .card.vendido .price { color: var(--muted); text-decoration: line-through; }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 0; }
+
+  /* Detalle */
+  dialog {
+    border: 1px solid var(--line); border-radius: 24px; padding: 0; background: var(--surface); color: var(--text);
+    width: min(860px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto;
+  }
+  dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
+  .detail { display: grid; grid-template-columns: 1.2fr 1fr; }
+  @media (max-width: 720px) { .detail { grid-template-columns: 1fr; } }
+  .gallery { background: var(--surface-2); position: relative; }
+  .gallery .main { aspect-ratio: 1; }
+  .gallery .main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumbs { display: flex; gap: 6px; padding: 8px; overflow-x: auto; }
+  .thumbs button { flex: none; width: 56px; height: 56px; padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; cursor: pointer; background: none; opacity: .6; }
+  .thumbs button[aria-current="true"] { border-color: var(--lime); opacity: 1; }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .info { padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+  .info h2 { font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; }
+  .info .price { font-size: 34px; padding: 0; margin: 0; }
+  .info p { color: var(--muted); }
+  .close {
+    position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+    border: none; background: rgba(0,0,0,.6); color: #fff; font-size: 22px; cursor: pointer;
+  }
+  .cta {
+    margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--lime); color: var(--lime-ink); text-decoration: none; font-weight: 700; font-size: 17px;
+    padding: 16px 20px; border-radius: 14px; transition: .15s;
+  }
+  .cta:hover { filter: brightness(1.08); }
+  .cta.off { background: var(--surface-2); color: var(--muted); pointer-events: none; }
+  .note { font-size: 13px; color: var(--muted); text-align: center; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
+  footer a { color: var(--lime); }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="tag" id="stock"></div>
+  <h1 id="titulo"></h1>
+  <p class="sub" id="subtitulo"></p>
+</header>
+
+<nav class="filters" aria-label="Filtrar por categoría">
+  <div class="wrap" id="chips"></div>
+</nav>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div class="wrap">¿Dudas o querés ofertar por varias cosas juntas? <a id="wa-general" target="_blank" rel="noopener">Escribime por WhatsApp</a>.</div>
+</footer>
+
+<dialog id="modal" aria-labelledby="m-title">
+  <button class="close" aria-label="Cerrar" onclick="modal.close()">×</button>
+  <div class="detail" id="detail"></div>
+</dialog>
+
+<script src="productos.js"></script>
+<script>
+  const C = window.CONFIG, P = window.PRODUCTOS;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const money = (n) => C.moneda + Number(n).toLocaleString("es-AR");
+  const wa = (msg) => `https://wa.me/${C.whatsapp}?text=${encodeURIComponent(msg)}`;
+  const initials = (s) => s.split(/\s+/).filter((w) => /^\p{L}/u.test(w)).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  const orden = { disponible: 0, reservado: 1, vendido: 2 };
+
+  // Encabezado
+  document.title = C.titulo;
+  const [first, ...rest] = C.titulo.split(" ");
+  $("titulo").innerHTML = `${esc(first)} <em>${esc(rest.join(" "))}</em>`;
+  $("subtitulo").textContent = C.subtitulo;
+  const disp = P.filter((p) => p.estado === "disponible").length;
+  $("stock").textContent = `${disp} ${disp === 1 ? "cosa disponible" : "cosas disponibles"}`;
+  $("wa-general").href = wa("¡Hola! Vi tu catálogo de venta por mudanza y tengo una consulta.");
+
+  // Filtros
+  let cat = "Todo", ocultarVendidos = false;
+  const cats = ["Todo", ...new Set(P.map((p) => p.categoria))];
+  $("chips").innerHTML = cats.map((c) => `<button class="chip" data-cat="${esc(c)}" aria-pressed="${c === cat}">${esc(c)}</button>`).join("") +
+    `<label class="toggle"><input type="checkbox" id="hide"> Ocultar vendidos</label>`;
+  $("chips").addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    cat = b.dataset.cat;
+    document.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    render();
+  });
+  $("hide").addEventListener("change", (e) => { ocultarVendidos = e.target.checked; render(); });
+
+  // Grilla
+  function render() {
+    const list = P
+      .filter((p) => (cat === "Todo" || p.categoria === cat) && !(ocultarVendidos && p.estado === "vendido"))
+      .sort((a, b) => orden[a.estado] - orden[b.estado]);
+    $("grid").innerHTML = list.length ? list.map((p) => `
+      <button class="card ${p.estado}" data-id="${esc(p.id)}">
+        <div class="thumb">
+          ${p.fotos?.length ? `<img src="${esc(p.fotos[0])}" alt="${esc(p.nombre)}" loading="lazy">` : `<div class="ph">${esc(initials(p.nombre))}</div>`}
+          ${p.estado !== "disponible" ? `<span class="badge ${p.estado}">${p.estado}</span>` : ""}
+          ${p.fotos?.length > 1 ? `<span class="count">${p.fotos.length} fotos</span>` : ""}
+        </div>
+        <div class="body">
+          <span class="cat">${esc(p.categoria)}</span>
+          <span class="name">${esc(p.nombre)}</span>
+          <span class="price">${money(p.precio)}</span>
+        </div>
+      </button>`).join("") : `<p class="empty">No hay nada acá por ahora.</p>`;
+  }
+  $("grid").addEventListener("click", (e) => {
+    const c = e.target.closest(".card"); if (c) abrir(c.dataset.id);
+  });
+
+  // Detalle
+  const modal = $("modal");
+  function abrir(id) {
+    const p = P.find((x) => x.id === id); if (!p) return;
+    const fotos = p.fotos || [];
+    const msg = `¡Hola! Me interesa "${p.nombre}" (${money(p.precio)}) de tu venta por mudanza. ¿Sigue disponible?`;
+    const cta = {
+      disponible: `<a class="cta" href="${wa(msg)}" target="_blank" rel="noopener">Me interesa → WhatsApp</a><span class="note">Se abre WhatsApp con un mensaje ya escrito.</span>`,
+      reservado: `<a class="cta" href="${wa(msg.replace("¿Sigue disponible?", "Si se cae la reserva, ¿me avisás?"))}" target="_blank" rel="noopener">Avisame si se libera</a><span class="note">Está reservado, pero podés quedar en lista de espera.</span>`,
+      vendido: `<span class="cta off">Vendido</span>`,
+    }[p.estado];
+    $("detail").innerHTML = `
+      <div class="gallery">
+        <div class="main">${fotos.length ? `<img id="main-img" src="${esc(fotos[0])}" alt="${esc(p.nombre)}">` : `<div class="ph" style="aspect-ratio:1">${esc(initials(p.nombre))}</div>`}</div>
+        ${fotos.length > 1 ? `<div class="thumbs">${fotos.map((f, i) => `<button data-src="${esc(f)}" aria-current="${i === 0}" aria-label="Foto ${i + 1}"><img src="${esc(f)}" alt=""></button>`).join("")}</div>` : ""}
+      </div>
+      <div class="info">
+        <span class="cat">${esc(p.categoria)}${p.estado !== "disponible" ? ` · <span style="color:var(--amber)">${p.estado}</span>` : ""}</span>
+        <h2 id="m-title">${esc(p.nombre)}</h2>
+        <span class="price">${money(p.precio)}</span>
+        <p>${esc(p.descripcion)}</p>
+        ${cta}
+      </div>`;
+    $("detail").querySelectorAll(".thumbs button").forEach((b) => b.addEventListener("click", () => {
+      $("main-img").src = b.dataset.src;
+      $("detail").querySelectorAll(".thumbs button").forEach((x) => x.setAttribute("aria-current", x === b));
+    }));
+    history.replaceState(null, "", "#" + p.id);
+    modal.showModal();
+  }
+  modal.addEventListener("close", () => history.replaceState(null, "", location.pathname));
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.close(); });
+
+  render();
+  // Link directo a un producto: tusitio/#sofa
+  if (location.hash) abrir(decodeURIComponent(location.hash.slice(1)));
+</script>
+</body>
+</html>
