@@ -150,7 +150,10 @@
   <div class="detail" id="detail"></div>
 </dialog>
 
-<script src="productos.js"></script>
+<script>
+  // Carga productos.js sin caché, así los cambios se ven al instante
+  document.write('<script src="productos.js?v=' + Date.now() + '"><\/script>');
+</script>
 <script>
   // Tema: color de acento definido en productos.js (o ?accent= para previsualizar)
   (() => {
