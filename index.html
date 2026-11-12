@@ -90,7 +90,7 @@
   .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 0; }
 
   /* Detalle */
-  dialog {
+  dialog { margin: auto;
     border: 1px solid var(--line); border-radius: 24px; padding: 0; background: var(--surface); color: var(--text);
     width: min(860px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto;
   }
@@ -164,7 +164,7 @@
   const C = window.CONFIG, P = window.PRODUCTOS;
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const money = (n) => C.moneda + Number(n).toLocaleString("es-AR");
+  const money = (n) => n == null || n === "" ? "Consultar precio" : C.moneda + Number(n).toLocaleString("es-AR");
   const wa = (msg) => `https://wa.me/${C.whatsapp}?text=${encodeURIComponent(msg)}`;
   const initials = (s) => s.split(/\s+/).filter((w) => /^\p{L}/u.test(w)).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   const orden = { disponible: 0, reservado: 1, vendido: 2 };
@@ -219,7 +219,7 @@
   function abrir(id) {
     const p = P.find((x) => x.id === id); if (!p) return;
     const fotos = p.fotos || [];
-    const msg = `¡Hola! Me interesa "${p.nombre}" (${money(p.precio)}) de tu venta por mudanza. ¿Sigue disponible?`;
+    const msg = `¡Hola! Me interesa "${p.nombre}"${p.precio == null ? "" : ` (${money(p.precio)})`} de tu venta por mudanza. ¿Sigue disponible?`;
     const cta = {
       disponible: `<a class="cta" href="${wa(msg)}" target="_blank" rel="noopener">Me interesa → WhatsApp</a><span class="note">Se abre WhatsApp con un mensaje ya escrito.</span>`,
       reservado: `<a class="cta" href="${wa(msg.replace("¿Sigue disponible?", "Si se cae la reserva, ¿me avisás?"))}" target="_blank" rel="noopener">Avisame si se libera</a><span class="note">Está reservado, pero podés quedar en lista de espera.</span>`,
