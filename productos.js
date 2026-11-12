@@ -21,7 +21,7 @@ window.PRODUCTOS = [
   {
     id: "comoda-6-cajones",
     nombre: "Cómoda vintage de 6 cajones",
-    precio: null,
+    precio: 400000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Cómoda de los años 50/60 en madera enchapada, con marquetería geométrica en los frentes, tiradores de bronce y patas cónicas con punteras doradas. Seis cajones amplios. Ideal como cómoda, aparador o mueble para equipo de música.",
@@ -36,11 +36,11 @@ window.PRODUCTOS = [
   },
   {
     id: "mueble-cajones-puerta",
-    nombre: "Mueble vintage con cajones y puerta",
-    precio: null,
+    nombre: "Par de mesas de luz mid-century",
+    precio: 200000,
     categoria: "Muebles",
     estado: "disponible",
-    descripcion: "Mueble estilo mid-century en madera lustrada, con dos cajones, una puerta lateral y patas cónicas. Sirve como aparador, mesa de arrimo o escritorio chico.",
+    descripcion: "Dos mesas de luz estilo mid-century en madera lustrada, con dos cajones, una puerta lateral y patas cónicas. Se venden las dos juntas (en las fotos se ve una).",
     fotos: [
       "fotos/mueble-nogal-1.jpg",
       "fotos/mueble-nogal-2.jpg",
@@ -48,8 +48,8 @@ window.PRODUCTOS = [
   },
   {
     id: "mesa-ratona",
-    nombre: "Mesa ratona vintage con vidrio",
-    precio: null,
+    nombre: "Mesa ratona mid-century con vidrio",
+    precio: 250000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Mesa ratona de madera estilo mid-century, con tapa de vidrio, patas abiertas y un compartimento bajo el vidrio (pintado en verde agua) para guardar revistas, libros o lo que quieras tener a mano.",
@@ -61,7 +61,7 @@ window.PRODUCTOS = [
   {
     id: "estanteria-mimbre",
     nombre: "Estantería de mimbre con arco",
-    precio: null,
+    precio: 90000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Estantería alta de mimbre pintado de blanco, con remate en arco y cinco estantes. Súper liviana y decorativa: queda hermosa con plantas, libros o canastos.",
@@ -73,7 +73,7 @@ window.PRODUCTOS = [
   {
     id: "mueble-vinilos",
     nombre: "Mueble para vinilos de hierro",
-    precio: null,
+    precio: 90000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Mueble de hierro negro estilo retro, con estante superior de malla (ideal para la bandeja tocadiscos) y separador de discos abajo. Liviano, firme y con mucha onda.",
@@ -86,7 +86,7 @@ window.PRODUCTOS = [
   {
     id: "perchero-estantes",
     nombre: "Perchero con estantes",
-    precio: null,
+    precio: 130000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Perchero de hierro blanco con estantes de madera natural y barral para colgar ropa. Práctico para un dormitorio, una entrada o un monoambiente.",
@@ -98,8 +98,8 @@ window.PRODUCTOS = [
   },
   {
     id: "espejo-ondulado",
-    nombre: "Espejo vintage con marco ondulado",
-    precio: null,
+    nombre: "Espejo antiguo con marco ondulado",
+    precio: 70000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Espejo antiguo con vidrio biselado y marco de madera oscura de forma ondulada. Trae cadena para colgar.",
@@ -112,7 +112,7 @@ window.PRODUCTOS = [
   {
     id: "espejo-pie",
     nombre: "Espejo de pie",
-    precio: null,
+    precio: 40000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Espejo de cuerpo entero con marco de madera y pata trasera para apoyarlo en el piso.",
@@ -124,7 +124,7 @@ window.PRODUCTOS = [
   {
     id: "repisa-rombo",
     nombre: "Repisa de pared en rombo",
-    precio: null,
+    precio: 30000,
     categoria: "Muebles",
     estado: "disponible",
     descripcion: "Repisa de pared con estructura de hierro blanco en forma de rombo y tres estantes de madera. Súper decorativa para libros, plantas y objetos.",
