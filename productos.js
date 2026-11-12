@@ -8,6 +8,8 @@ window.CONFIG = {
   // Argentina celular: 549 + código de área sin 0 + número sin 15. Ej: 5491123456789
   whatsapp: "5491100000000",
   moneda: "$",
+  acento: "#ff385c",      // color de acento
+  acentoTexto: "#ffffff", // color del texto sobre el acento
 };
 
 // ============================================================
