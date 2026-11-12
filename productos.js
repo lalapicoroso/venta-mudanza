@@ -3,7 +3,8 @@
 // ============================================================
 window.CONFIG = {
   titulo: "Venta x mudanza",
-  subtitulo: "Me mudo en diciembre y vendo cosas de casa. Retiro en zona — coordinamos por WhatsApp.",
+  subtitulo: "Me mudo en diciembre y vendo cosas de casa. Coordinamos por WhatsApp.",
+  retiro: "Retiro por Coghlan (CABA) o San Andrés (Partido de San Martín)",
   // Número en formato internacional, sin +, espacios ni guiones.
   // Argentina celular: 549 + código de área sin 0 + número sin 15. Ej: 5491123456789
   whatsapp: "5491169987319",

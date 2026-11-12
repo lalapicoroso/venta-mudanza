@@ -141,6 +141,9 @@
   }
   .cta:hover { filter: brightness(1.1); }
   .cta.off { background: var(--surface-2); color: var(--muted); pointer-events: none; }
+  .retiro { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--text); margin-top: 14px; }
+  .info .retiro { margin-top: 0; padding: 14px 16px; background: #f6f6f6; border-radius: 12px; }
+  .retiro svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
   .note { font-size: 13px; color: var(--muted); text-align: center; }
 
   @media (max-width: 800px) {
@@ -168,6 +171,7 @@
   <div class="tag" id="stock"></div>
   <h1 id="titulo"></h1>
   <p class="sub" id="subtitulo"></p>
+  <p class="retiro" id="retiro"></p>
 </header>
 
 <nav class="filters" aria-label="Filtrar por categoría">
@@ -219,6 +223,8 @@
   const [first, ...rest] = C.titulo.split(" ");
   $("titulo").innerHTML = `${esc(first)} <em>${esc(rest.join(" "))}</em>`;
   $("subtitulo").textContent = C.subtitulo;
+  const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  if (C.retiro) $("retiro").innerHTML = PIN + esc(C.retiro);
   const disp = P.filter((p) => p.estado === "disponible").length;
   $("stock").textContent = `${disp} ${disp === 1 ? "cosa disponible" : "cosas disponibles"}`;
   $("wa-general").href = wa("¡Hola! Vi tu catálogo de venta por mudanza y tengo una consulta.");
@@ -302,6 +308,7 @@
         <h2 id="d-title">${esc(p.nombre)}</h2>
         <span class="price">${money(p.precio)}</span>
         <p>${esc(p.descripcion)}</p>
+        ${C.retiro ? `<div class="retiro">${PIN}${esc(C.retiro)}</div>` : ""}
         <div class="cta-wrap">${cta}</div>
       </div>`;
 
